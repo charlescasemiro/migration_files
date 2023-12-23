@@ -1,0 +1,13 @@
+- name: Collect stats for hardware
+  ansible.builtin.setup:
+    gather_subset:
+      - hardware
+
+- name: Print the stat output for devices
+  ansible.builtin.debug:
+    var: hostvars[inventory_hostname].ansible_devices
+
+- name: Print the disk size only for sd disks
+  ansible.builtin.debug:
+    msg: "{{ ansible_devices[item].size }}"
+  loop: "{{ ansible_devices.keys() | map('regex_search', 'sd.*') | select('string') | list }}"
